@@ -71,11 +71,6 @@ class MusicPlayerManager(context: Context) : LifecycleObserver {
         playTrack(nextIndex)
     }
 
-    fun playPrevious() {
-        val prevIndex = if (currentTrackIndex == 0) tracks.size - 1 else currentTrackIndex - 1
-        playTrack(prevIndex)
-    }
-
     /**
      * Получить длительность трека без воспроизведения
      */
