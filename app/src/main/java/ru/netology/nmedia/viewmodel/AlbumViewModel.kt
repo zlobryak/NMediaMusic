@@ -7,11 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import ru.netology.nmedia.data.dto.Album
 import ru.netology.nmedia.data.dto.Track
 import ru.netology.nmedia.data.repository.AlbumRepository
 import ru.netology.nmedia.player.MusicPlayerManager
+import kotlin.coroutines.resume
 
 class AlbumViewModel : ViewModel() {
     private val repository = AlbumRepository()
@@ -22,10 +22,10 @@ class AlbumViewModel : ViewModel() {
     private val _loadingError = MutableLiveData<Throwable>()
     val loadingError: LiveData<Throwable> = _loadingError
 
-    private val _currentTrackIndex = MutableLiveData<Int>(-1)
+    private val _currentTrackIndex = MutableLiveData(-1)
     val currentTrackIndex: LiveData<Int> = _currentTrackIndex
 
-    private val _isPlaying = MutableLiveData<Boolean>(false)
+    private val _isPlaying = MutableLiveData(false)
     val isPlaying: LiveData<Boolean> = _isPlaying
 
     private val _trackDurations = MutableLiveData<Map<Int, Long>>(emptyMap())
@@ -86,12 +86,10 @@ class AlbumViewModel : ViewModel() {
      * Получаем длительность для одного трека
      */
     private suspend fun getDurationForTrack(track: Track): Long? {
-        return withContext(Dispatchers.Main) {
-            kotlinx.coroutines.suspendCancellableCoroutine { continuation ->
-                playerManager.getTrackDuration(track) { duration ->
-                    if (continuation.isActive) {
-                        continuation.resume(duration) { }
-                    }
+        return kotlinx.coroutines.suspendCancellableCoroutine { continuation ->
+            playerManager.getTrackDuration(track) { duration ->
+                if (continuation.isActive) {
+                    continuation.resume(duration)
                 }
             }
         }

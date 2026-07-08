@@ -9,6 +9,8 @@ import okhttp3.Request
 import okhttp3.Response
 import ru.netology.nmedia.data.dto.Album
 import java.io.IOException
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 class AlbumRepository {
     private val client = OkHttpClient()
@@ -19,17 +21,29 @@ class AlbumRepository {
             .url("https://github.com/netology-code/andad-homeworks/raw/master/09_multimedia/data/album.json")
             .build()
 
-        client.newCall(request).enqueue(object : Callback {
+        val call = client.newCall(request)
+
+        call.enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                continuation.resumeWith(Result.failure(e))
+                // Проверяем isActive, чтобы избежать IllegalArgumentException,
+                // если корутина уже была отменена
+                if (continuation.isActive) {
+                    continuation.resumeWithException(e)
+                }
             }
 
             override fun onResponse(call: Call, response: Response) {
                 response.body.string().let { json ->
                     val album = gson.fromJson(json, Album::class.java)
-                    continuation.resume(album) { }
+                    if (continuation.isActive) {
+                        continuation.resume(album)
+                    }
                 }
             }
         })
+
+        continuation.invokeOnCancellation {
+            call.cancel()
+        }
     }
 }

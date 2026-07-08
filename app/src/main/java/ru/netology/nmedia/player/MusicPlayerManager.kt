@@ -1,14 +1,13 @@
 package ru.netology.nmedia.player
 
 import android.content.Context
-import androidx.lifecycle.LifecycleObserver
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import okhttp3.internal.platform.PlatformRegistry.applicationContext
 import ru.netology.nmedia.data.dto.Track
 
-class MusicPlayerManager(context: Context) : LifecycleObserver {
+class MusicPlayerManager(private val context: Context) {
     private var exoPlayer: ExoPlayer? = null
     private var currentTrackIndex = 0
     private var tracks: List<Track> = emptyList()
@@ -71,11 +70,16 @@ class MusicPlayerManager(context: Context) : LifecycleObserver {
         playTrack(nextIndex)
     }
 
+    fun playPrevious() {
+        val prevIndex = if (currentTrackIndex == 0) tracks.size - 1 else currentTrackIndex - 1
+        playTrack(prevIndex)
+    }
+
     /**
      * Получить длительность трека без воспроизведения
      */
     fun getTrackDuration(track: Track, callback: (Long) -> Unit) {
-        val tempPlayer = ExoPlayer.Builder(applicationContext ?: return).build()
+        val tempPlayer = ExoPlayer.Builder(context.applicationContext).build()
         val mediaItem = MediaItem.fromUri(track.getAudioUrl())
 
         var durationReceived = false
@@ -99,10 +103,12 @@ class MusicPlayerManager(context: Context) : LifecycleObserver {
                             tempPlayer.release()
                         }
                     }
+                    Player.STATE_BUFFERING -> {
+                    }
                 }
             }
 
-            override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
+            override fun onPlayerError(error: PlaybackException) {
                 if (!durationReceived) {
                     durationReceived = true
                     tempPlayer.release()
@@ -113,6 +119,7 @@ class MusicPlayerManager(context: Context) : LifecycleObserver {
         tempPlayer.setMediaItem(mediaItem)
         tempPlayer.prepare()
     }
+
     fun release() {
         exoPlayer?.release()
         exoPlayer = null

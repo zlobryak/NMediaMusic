@@ -16,6 +16,8 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: AlbumViewModel by viewModels()
     private lateinit var adapter: AlbumAdapter
 
+    private var previousTrackIndex = -1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -82,18 +84,40 @@ class MainActivity : AppCompatActivity() {
             binding.progressBar.visibility = View.GONE
         }
 
-        viewModel.currentTrackIndex.observe(this) {
-            adapter.notifyDataSetChanged()
+        viewModel.currentTrackIndex.observe(this) { newIndex ->
+            val oldIndex = previousTrackIndex
+
+            // Обновляем старый трек (убираем иконку play/pause)
+            if (oldIndex >= 0) {
+                adapter.notifyItemChanged(oldIndex)
+            }
+
+            // Обновляем новый трек (добавляем иконку play/pause)
+            if (newIndex >= 0) {
+                adapter.notifyItemChanged(newIndex)
+            }
+
+            previousTrackIndex = newIndex
         }
 
         viewModel.isPlaying.observe(this) { isPlaying ->
             updatePlayPauseButton(isPlaying)
-            adapter.notifyDataSetChanged()
+            val currentIndex = viewModel.currentTrackIndex.value ?: -1
+            if (currentIndex >= 0) {
+                adapter.notifyItemChanged(currentIndex)
+            }
         }
 
         viewModel.trackDurations.observe(this) { durations ->
             android.util.Log.d("MainActivity", "Durations updated: ${durations.size} tracks")
-            adapter.notifyDataSetChanged()
+            // Получаем текущий список треков
+            val tracks = adapter.currentList
+            tracks.forEachIndexed { index, track ->
+                // Если для этого трека есть длительность, обновляем только его
+                if (durations.containsKey(track.id)) {
+                    adapter.notifyItemChanged(index)
+                }
+            }
         }
 
         viewModel.loadingError.observe(this) { error ->
@@ -105,7 +129,7 @@ class MainActivity : AppCompatActivity() {
     private fun updateAlbumInfo(album: Album) {
         binding.albumTitle.text = album.title
         binding.albumArtist.text = album.artist
-        binding.albumInfo.text = "${album.genre} • ${album.published}"
+        binding.albumInfo.text = getString(R.string.update_album_info, album.genre, album.published)
     }
 
     private fun updatePlayPauseButton(isPlaying: Boolean) {
