@@ -38,6 +38,9 @@ class MainActivity : AppCompatActivity() {
             onTrackClick = { index ->
                 viewModel.playTrack(index)
             },
+            onPlayPauseClick = {
+                viewModel.togglePlayPause()
+            },
             getCurrentTrackIndex = { viewModel.currentTrackIndex.value ?: -1 },
             getIsPlaying = { viewModel.isPlaying.value == true },
             getDurations = { viewModel.trackDurations.value ?: emptyMap() },
@@ -69,6 +72,9 @@ class MainActivity : AppCompatActivity() {
             adapter = AlbumAdapter(
                 onTrackClick = { index ->
                     viewModel.playTrack(index)
+                },
+                onPlayPauseClick = {
+                    viewModel.togglePlayPause()
                 },
                 getCurrentTrackIndex = { viewModel.currentTrackIndex.value ?: -1 },
                 getIsPlaying = { viewModel.isPlaying.value == true },

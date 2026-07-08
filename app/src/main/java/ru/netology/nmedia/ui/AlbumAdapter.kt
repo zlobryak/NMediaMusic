@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit
 
 class AlbumAdapter(
     private val onTrackClick: (Int) -> Unit,
+    private val onPlayPauseClick: () -> Unit,
     private val getCurrentTrackIndex: () -> Int,
     private val getIsPlaying: () -> Boolean,
     private val getDurations: () -> Map<Int, Long>,
@@ -35,7 +36,8 @@ class AlbumAdapter(
     inner class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val trackNumber: TextView = itemView.findViewById(R.id.trackNumber)
         private val trackPlayIcon: ImageView = itemView.findViewById(R.id.trackPlayIcon)
-        private val trackPlayingIndicator: ImageView = itemView.findViewById(R.id.trackPlayingIndicator)
+        private val trackPlayingIndicator: ImageView =
+            itemView.findViewById(R.id.trackPlayingIndicator)
         private val trackTitle: TextView = itemView.findViewById(R.id.trackTitle)
         private val trackArtist: TextView = itemView.findViewById(R.id.trackArtist)
         private val trackDuration: TextView = itemView.findViewById(R.id.trackDuration)
@@ -68,7 +70,8 @@ class AlbumAdapter(
                     trackPlayingIndicator.visibility = View.VISIBLE
 
                     // Запускаем анимацию эквалайзера
-                    val animationDrawable = itemView.context.getDrawable(R.drawable.anim_equalizer) as? AnimationDrawable
+                    val animationDrawable =
+                        itemView.context.getDrawable(R.drawable.anim_equalizer) as? AnimationDrawable
                     trackPlayingIndicator.setImageDrawable(animationDrawable)
                     animationDrawable?.start()
 
@@ -83,20 +86,28 @@ class AlbumAdapter(
                     // Приглушаем название трека
                     trackTitle.setTextColor(itemView.context.getColor(R.color.text_secondary))
                 }
+
+                itemView.setOnClickListener { onPlayPauseClick() }
+                trackPlayIcon.setOnClickListener { onPlayPauseClick() }
             } else {
                 // Для остальных треков показываем номер
                 trackNumber.visibility = View.VISIBLE
                 trackPlayIcon.visibility = View.GONE
                 trackPlayingIndicator.visibility = View.GONE
                 trackNumber.text = (position + 1).toString()
-
-                // Обычный цвет
                 trackTitle.setTextColor(itemView.context.getColor(R.color.text_primary))
+
+                itemView.setOnClickListener {
+                    onTrackClick(position)
+                }
+                itemView.setOnClickListener { onTrackClick(position) }
+                // Убираем listener с иконки, если она скрыта
+                trackPlayIcon.setOnClickListener(null)
             }
 
-            itemView.setOnClickListener {
-                onTrackClick(position)
-            }
+
+            trackPlayIcon.setOnClickListener { onPlayPauseClick() }
+
         }
     }
 
