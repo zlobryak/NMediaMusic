@@ -140,7 +140,6 @@ class AlbumViewModel : ViewModel() {
         _trackDurations.postValue(currentDurations)
     }
 
-    fun isPlaying(): Boolean = playerManager.isPlaying
 
     override fun onCleared() {
         playerManager.release()
