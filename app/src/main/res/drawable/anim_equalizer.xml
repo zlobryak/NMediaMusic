@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false">
+
+    <!-- Кадр 1: низкая высота -->
+    <item android:duration="200">
+        <vector xmlns:android="http://schemas.android.com/apk/res/android"
+            android:width="24dp"
+            android:height="24dp"
+            android:viewportWidth="24"
+            android:viewportHeight="24">
+            <path
+                android:fillColor="#FF6B6B"
+                android:pathData="M7,18h2v-6h-2v6zM11,18h2v-10h-2v10zM15,18h2v-8h-2v8z" />
+        </vector>
+    </item>
+
+    <!-- Кадр 2: средняя высота -->
+    <item android:duration="200">
+        <vector xmlns:android="http://schemas.android.com/apk/res/android"
+            android:width="24dp"
+            android:height="24dp"
+            android:viewportWidth="24"
+            android:viewportHeight="24">
+            <path
+                android:fillColor="#FF6B6B"
+                android:pathData="M7,18h2v-10h-2v10zM11,18h2v-6h-2v6zM15,18h2v-12h-2v12z" />
+        </vector>
+    </item>
+
+    <!-- Кадр 3: высокая высота -->
+    <item android:duration="200">
+        <vector xmlns:android="http://schemas.android.com/apk/res/android"
+            android:width="24dp"
+            android:height="24dp"
+            android:viewportWidth="24"
+            android:viewportHeight="24">
+            <path
+                android:fillColor="#FF6B6B"
+                android:pathData="M7,18h2v-12h-2v12zM11,18h2v-14h-2v14zM15,18h2v-6h-2v6z" />
+        </vector>
+    </item>
+
+    <!-- Кадр 4: обратно средняя -->
+    <item android:duration="200">
+        <vector xmlns:android="http://schemas.android.com/apk/res/android"
+            android:width="24dp"
+            android:height="24dp"
+            android:viewportWidth="24"
+            android:viewportHeight="24">
+            <path
+                android:fillColor="#FF6B6B"
+                android:pathData="M7,18h2v-8h-2v8zM11,18h2v-10h-2v10zM15,18h2v-14h-2v14z" />
+        </vector>
+    </item>
+
+</animation-list>
