@@ -9,7 +9,7 @@
     android:paddingHorizontal="16dp"
     android:paddingVertical="12dp">
 
-    <!-- Номер трека -->
+    <!-- Номер трека (показывается для неактивных треков) -->
     <TextView
         android:id="@+id/trackNumber"
         android:layout_width="32dp"
@@ -22,32 +22,17 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="1" />
 
-    <!-- Иконка Play/Pause (показывается для текущего трека) -->
+    <!-- Иконка Play/Pause (показывается для активного трека) -->
     <ImageView
         android:id="@+id/trackPlayIcon"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/trackNumber"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/icon_color"
         tools:src="@drawable/ic_play"
-        tools:visibility="visible" />
-
-    <!-- НОВОЕ: Индикатор воспроизведения (эквалайзер) -->
-    <ImageView
-        android:id="@+id/trackPlayingIndicator"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="8dp"
-        android:visibility="gone"
-        android:contentDescription="Now playing"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/trackPlayIcon"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/accent"
-        tools:src="@drawable/ic_equalizer"
         tools:visibility="visible" />
 
     <!-- Название трека -->
@@ -62,8 +47,8 @@
         android:textSize="16sp"
         android:textColor="@color/text_primary"
         app:layout_constraintBottom_toTopOf="@id/trackArtist"
-        app:layout_constraintEnd_toStartOf="@id/trackDuration"
-        app:layout_constraintStart_toEndOf="@id/trackNumber"
+        app:layout_constraintEnd_toStartOf="@id/trackPlayingIndicator"
+        app:layout_constraintStart_toEndOf="@id/trackPlayIcon"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="Track Title" />
@@ -81,10 +66,25 @@
         android:textSize="14sp"
         android:textColor="@color/text_secondary"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/trackDuration"
-        app:layout_constraintStart_toEndOf="@id/trackNumber"
+        app:layout_constraintEnd_toStartOf="@id/trackPlayingIndicator"
+        app:layout_constraintStart_toEndOf="@id/trackPlayIcon"
         app:layout_constraintTop_toBottomOf="@id/trackTitle"
         tools:text="Artist" />
+
+    <!-- Индикатор воспроизведения (эквалайзер) -->
+    <ImageView
+        android:id="@+id/trackPlayingIndicator"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="8dp"
+        android:visibility="gone"
+        android:contentDescription="Now playing"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/trackDuration"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/accent"
+        tools:src="@drawable/ic_equalizer"
+        tools:visibility="visible" />
 
     <!-- Длительность трека -->
     <TextView

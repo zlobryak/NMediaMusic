@@ -38,7 +38,8 @@ class MainActivity : AppCompatActivity() {
             },
             getCurrentTrackIndex = { viewModel.currentTrackIndex.value ?: -1 },
             getIsPlaying = { viewModel.isPlaying.value == true },
-            getDurations = { viewModel.trackDurations.value ?: emptyMap() }  // ДОБАВЛЕНО
+            getDurations = { viewModel.trackDurations.value ?: emptyMap() },
+            albumArtist = ""
         )
 
         binding.recyclerView.adapter = adapter
@@ -61,7 +62,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupObservers() {
         viewModel.albumData.observe(this) { album ->
+            binding.progressBar.visibility = View.VISIBLE
+
+            adapter = AlbumAdapter(
+                onTrackClick = { index ->
+                    viewModel.playTrack(index)
+                },
+                getCurrentTrackIndex = { viewModel.currentTrackIndex.value ?: -1 },
+                getIsPlaying = { viewModel.isPlaying.value == true },
+                getDurations = { viewModel.trackDurations.value ?: emptyMap() },
+                albumArtist = album.artist  // Передаём исполнителя
+            )
+
             adapter.submitList(album.tracks)
+
+            binding.recyclerView.adapter = adapter
+
             updateAlbumInfo(album)
             binding.progressBar.visibility = View.GONE
         }
