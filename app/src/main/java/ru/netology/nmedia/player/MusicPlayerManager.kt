@@ -32,7 +32,7 @@ class MusicPlayerManager(private val context: Context) {
                 }
 
                 if (state == Player.STATE_ENDED) {
-                    playNext()
+                    onTrackEnded?.invoke()
                 }
             }
 
@@ -63,16 +63,6 @@ class MusicPlayerManager(private val context: Context) {
 
     fun pause() {
         exoPlayer?.pause()
-    }
-
-    fun playNext() {
-        val nextIndex = (currentTrackIndex + 1) % tracks.size
-        playTrack(nextIndex)
-    }
-
-    fun playPrevious() {
-        val prevIndex = if (currentTrackIndex == 0) tracks.size - 1 else currentTrackIndex - 1
-        playTrack(prevIndex)
     }
 
     /**
